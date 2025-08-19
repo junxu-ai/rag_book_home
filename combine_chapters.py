@@ -170,6 +170,42 @@ def combine_chapters(
 
 if __name__ == "__main__":
     # Example usage; replace with your own chapter files/topics.
-    FILES = ["chapter1.docx", "chapter2.docx"]
-    TOPICS = ["Topic 1", "Topic 2"]
-    combine_chapters(FILES, TOPICS, out_docx="book.docx", to_pdf=False)
+    FILES = [r'D:\Writing\llm_rag\word_version\Ch1 Introduction.docx', 
+                 r'D:\Writing\llm_rag\word_version\Ch2 LLMOps.docx', 
+                 r'D:\Writing\llm_rag\word_version\Ch3 RAG.docx',
+                 r'D:\Writing\llm_rag\word_version\Ch4 data process.docx', 
+                 r'D:\Writing\llm_rag\word_version\Ch5 Vector.docx',
+                 r'D:\Writing\llm_rag\word_version\Ch6 Query.docx',
+                 r'D:\Writing\llm_rag\word_version\Ch7 retrieval.docx',
+                 r'D:\Writing\llm_rag\word_version\Ch8 augumentation.docx',
+                 r'D:\Writing\llm_rag\word_version\Ch9 generation.docx',
+                 r'D:\Writing\llm_rag\word_version\Ch10 Evaluation.docx',
+                 r'D:\Writing\llm_rag\word_version\Ch11 Serving Monitoring.docx',
+                 r'D:\Writing\llm_rag\word_version\Ch12 pipeline.docx', 
+                  r'D:\Writing\llm_rag\word_version\Ch13 NL2SQL.docx',
+                 r'D:\Writing\llm_rag\word_version\Ch14 GraphRAG.docx',  
+                r'D:\Writing\llm_rag\word_version\Ch15 Agentic RAG.docx',   
+                r'D:\Writing\llm_rag\word_version\Ch16 Conclusion.docx',
+                r'D:\Writing\llm_rag\word_version\Ch17 Appendix.docx',     
+             ]
+    TOPICS = ["Introduction",  #1
+              "MLOps, LLMOps and RAGOps for Production", #2
+                "RAG Challenges and Solutions", #3
+                "Data Processing", #4
+                "Embedding and Vector Database", # 5
+                "Query Transformation and Prompt Engineering", #6
+                "Retrieval Techniques", #7 
+                "Augmentation and Refinement Techniques", #8 
+                "Generation Techniques", #9
+                "Evaluation Methodology", # 10
+                "Serving and Monitoring", # 11
+                "Pipeline and Orchestration", # 12
+              "RAG with Database and Text2SQL", #13
+              "GraphRAG", #14
+              "Agentic RAG", #15
+                "Conclusion", #16
+                "Appendix" #17
+              ]
+    
+    out_docx=r'D:\Writing\llm_rag\word_version\rag.docx'
+    combine_chapters(FILES, TOPICS, out_docx=out_docx, to_pdf=False)
