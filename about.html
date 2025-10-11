@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About the Author — RAG Systems Playbook</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <nav>
+      <span class="brand">RAG Systems Playbook</span>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="components.html">Components</a></li>
+        <li><a href="advanced.html">Advanced</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="feedback.html">Feedback</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <section class="section">
+        <span class="badge">Meet the Author</span>
+        <h1>Crafting RAG Systems for the Real World</h1>
+        <p class="lead">
+          This playbook captures years of experimentation launching RAG products in finance,
+          healthcare, and enterprise productivity. It bridges engineering rigor with product design
+          empathy to help you deliver trusted intelligence.
+        </p>
+        <div class="card-grid">
+          <article class="card">
+            <h3>Why this book now?</h3>
+            <p>
+              RAG has moved from prototype to production, yet builders still struggle with repeatable
+              patterns for quality, governance, and iteration. This guide distills the playbooks
+              developed across dozens of launches.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Who is it for?</h3>
+            <p>
+              Architects, ML engineers, product strategists, and technical leaders who need a
+              connective blueprint that unifies infrastructure choices, evaluation loops, and
+              user-centric experience design.
+            </p>
+          </article>
+          <article class="card">
+            <h3>How is it structured?</h3>
+            <p>
+              Organized into foundational components, advanced modalities, and operational
+              excellence, every chapter includes worksheets, code snippets, and checklists that map
+              directly to your roadmap.
+            </p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      © <span id="year"></span> RAG Systems Playbook — Crafted for builders of the next wave of intelligent products.
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reader Feedback — RAG Systems Playbook</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <nav>
+      <span class="brand">RAG Systems Playbook</span>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="components.html">Components</a></li>
+        <li><a href="advanced.html">Advanced</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="feedback.html">Feedback</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <section class="section">
+        <span class="badge">Community</span>
+        <h1>Share Your Reflections</h1>
+        <p class="lead">
+          Your stories, wins, and experiments bring the RAG Systems Playbook to life. Leave a note
+          for fellow builders and help shape the next edition.
+        </p>
+        <div class="feedback-wrapper">
+          <form id="feedback-form" class="feedback-form">
+            <label for="name">Name</label>
+            <input id="name" name="name" type="text" placeholder="How should we address you?" />
+
+            <label for="role">Role or Company</label>
+            <input
+              id="role"
+              name="role"
+              type="text"
+              placeholder="e.g. ML Engineer @ Lattice Labs"
+            />
+
+            <label for="message">Feedback</label>
+            <textarea
+              id="message"
+              name="message"
+              rows="5"
+              placeholder="Share how you're applying the playbook or what you'd love to see next."
+              required
+            ></textarea>
+
+            <button class="button primary" type="submit">Publish feedback</button>
+          </form>
+
+          <div>
+            <h2>What readers are saying</h2>
+            <p class="lead">
+              Entries are stored locally in your browser so you can revisit them or curate highlights
+              during your book club or team sync.
+            </p>
+            <div id="feedback-list" class="feedback-list"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      © <span id="year"></span> RAG Systems Playbook — Crafted for builders of the next wave of intelligent products.
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/feedback.js"></script>
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>

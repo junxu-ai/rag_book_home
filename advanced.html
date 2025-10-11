@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Advanced RAG Patterns — RAG Systems Playbook</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <nav>
+      <span class="brand">RAG Systems Playbook</span>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="components.html">Components</a></li>
+        <li><a href="advanced.html">Advanced</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="feedback.html">Feedback</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <section class="section">
+        <span class="badge">Frontier Strategies</span>
+        <h1>Advanced Retrieval Augmentation Patterns</h1>
+        <p class="lead">
+          Elevate your systems with composable strategies that extend retrieval into graphs, agents,
+          and domain-specific modalities like relational tables.
+        </p>
+        <div class="card-grid">
+          <article class="card">
+            <span class="step-number">GraphRAG</span>
+            <h3>Knowledge-Graph Grounded Generation</h3>
+            <p>
+              Fuse vector search with graph traversal, metapath expansion, and entity summarization
+              to surface reasoning chains and attribute provenance.
+            </p>
+            <p>
+              Learn how to pair embedding stores with graph databases, orchestrate Cypher/Gremlin
+              retrieval, and generate narrative answers anchored to graph evidence.
+            </p>
+          </article>
+          <article class="card">
+            <span class="step-number">Agentic RAG</span>
+            <h3>Multi-step Reasoning with Coordinated Tools</h3>
+            <p>
+              Deploy tool-using agents that iteratively plan, retrieve, critique, and refine
+              generations. Explore planner-executor loops and guardrail policies.
+            </p>
+            <p>
+              The book breaks down agent memory design, skill routing, and how to evaluate agentic
+              conversations for reliability and brand alignment.
+            </p>
+          </article>
+          <article class="card">
+            <span class="step-number">Tabular RAG</span>
+            <h3>Bridging Structured Analytics and Language Models</h3>
+            <p>
+              Marry SQL-native retrieval with semantic parsing, table-aware embeddings, and
+              human-readable report generation for data-rich scenarios.
+            </p>
+            <p>
+              Discover how to design schema registries, caching layers, and textual surfacing of
+              KPIs that maintain fidelity to regulated datasets.
+            </p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      © <span id="year"></span> RAG Systems Playbook — Crafted for builders of the next wave of intelligent products.
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>

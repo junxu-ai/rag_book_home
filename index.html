@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RAG Systems Playbook — Launchpad</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <nav>
+      <span class="brand">RAG Systems Playbook</span>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="components.html">Components</a></li>
+        <li><a href="advanced.html">Advanced</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="feedback.html">Feedback</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <section class="hero">
+        <div class="hero-content">
+          <span class="badge">New Release</span>
+          <h1>Designing Retrieval-Augmented Generation Systems That Delight</h1>
+          <p>
+            Explore a modern blueprint for building resilient, production-ready RAG pipelines.
+            The book walks through foundational components, advanced graph-native strategies,
+            and pragmatic guidance on evaluation, deployment, and continuous refinement.
+          </p>
+          <div class="cta-group">
+            <a class="button primary" href="components.html">Explore the framework</a>
+            <a class="button secondary" href="feedback.html">Join the conversation</a>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="visual-orb orb-primary"></div>
+          <div class="visual-orb orb-secondary"></div>
+          <div class="visual-orb orb-tertiary"></div>
+          <div class="visual-panel">
+            <span class="panel-badge">RAG Flow</span>
+            <h3>Context meets generation</h3>
+            <div class="panel-steps">
+              <span>Curate</span>
+              <span>Embed</span>
+              <span>Retrieve</span>
+              <span>Augment</span>
+              <span>Generate</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Inside the Playbook</h2>
+        <p class="lead">
+          Every chapter blends architecture diagrams, field-tested heuristics, and hands-on
+          experiments to help you orchestrate intelligent retrieval across text, tables, and
+          knowledge graphs.
+        </p>
+        <div class="card-grid">
+          <article class="card">
+            <span class="step-number">01</span>
+            <h3>From raw data to augmented insights</h3>
+            <p>
+              Understand how to source, cleanse, and segment domain corpora that truly represent
+              your institutional knowledge while remaining governance-ready.
+            </p>
+          </article>
+          <article class="card">
+            <span class="step-number">02</span>
+            <h3>Retrieval strategies beyond the vector</h3>
+            <p>
+              Move past naive similarity search with hybrid retrieval, graph traversal, and
+              semantic reranking techniques tuned to your latency budgets.
+            </p>
+          </article>
+          <article class="card">
+            <span class="step-number">03</span>
+            <h3>Operational excellence</h3>
+            <p>
+              Master evaluation harnesses, red-teaming drills, and monitoring guardrails that keep
+              your generative experiences trustworthy from day one.
+            </p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      © <span id="year"></span> RAG Systems Playbook — Crafted for builders of the next wave of intelligent products.
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>
