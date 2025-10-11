@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RAG Components — RAG Systems Playbook</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <nav>
+      <span class="brand">RAG Systems Playbook</span>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="components.html">Components</a></li>
+        <li><a href="advanced.html">Advanced</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="feedback.html">Feedback</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <section class="section">
+        <span class="badge">Blueprint</span>
+        <h1>The Essential Components of a Modern RAG Pipeline</h1>
+        <p class="lead">
+          Trace the lifecycle of your knowledge assets—from first-mile ingestion to observability in
+          production. Each component is grounded in operational patterns and guardrails explored in
+          the book.
+        </p>
+        <div class="timeline">
+          <div class="timeline-step">
+            <h3>Data Processing</h3>
+            <p>
+              Acquire, normalize, and enrich structured and unstructured sources with attention to
+              freshness, access controls, and data minimization.
+            </p>
+          </div>
+          <div class="timeline-step">
+            <h3>Vector &amp; Embedding</h3>
+            <p>
+              Choose modality-aware embeddings, apply dimensionality reduction where needed, and
+              track embedding drift with golden datasets.
+            </p>
+          </div>
+          <div class="timeline-step">
+            <h3>Prompt Engineering</h3>
+            <p>
+              Structure prompts with deterministic scaffolds, instructions, and explicit
+              guardrails—instrumented with prompt-versioning metadata.
+            </p>
+          </div>
+          <div class="timeline-step">
+            <h3>Retrieval</h3>
+            <p>
+              Combine vector search, sparse signals, and business-specific heuristics to maximize
+              recall without sacrificing explainability.
+            </p>
+          </div>
+          <div class="timeline-step">
+            <h3>Augmentation</h3>
+            <p>
+              Inject retrieved evidence into prompts through templating, graph context assembly, or
+              fusion-in-decoder pipelines.
+            </p>
+          </div>
+          <div class="timeline-step">
+            <h3>Generation</h3>
+            <p>
+              Tune model selection, decoding parameters, and content filters to deliver truthful,
+              brand-safe, and tone-aligned responses.
+            </p>
+          </div>
+          <div class="timeline-step">
+            <h3>Evaluation</h3>
+            <p>
+              Blend human review, automatic metrics, adversarial probes, and regression harnesses to
+              validate factual grounding and UX quality.
+            </p>
+          </div>
+          <div class="timeline-step">
+            <h3>Serving &amp; Monitoring</h3>
+            <p>
+              Instrument latency SLOs, hallucination detectors, and safety policies across the full
+              serving stack to catch regressions early.
+            </p>
+          </div>
+          <div class="timeline-step">
+            <h3>Orchestration &amp; Pipeline</h3>
+            <p>
+              Coordinate schedulers, feature stores, workflow engines, and human-in-the-loop review
+              cycles to keep the pipeline continuously improving.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      © <span id="year"></span> RAG Systems Playbook — Crafted for builders of the next wave of intelligent products.
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FAQ — RAG Systems Playbook</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <nav>
+      <span class="brand">RAG Systems Playbook</span>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="components.html">Components</a></li>
+        <li><a href="advanced.html">Advanced</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="feedback.html">Feedback</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <section class="section">
+        <span class="badge">FAQs</span>
+        <h1>Questions About the RAG Systems Playbook</h1>
+        <p class="lead">
+          Answers to the most common questions from teams implementing the frameworks and assets
+          described throughout the book.
+        </p>
+        <div class="faq-list">
+          <article class="faq-item">
+            <div class="faq-question">
+              <span>What level of technical background do I need?</span>
+              <span>＋</span>
+            </div>
+            <div class="faq-answer">
+              <p>
+                The playbook assumes basic familiarity with machine learning workflows and modern
+                cloud tooling. Each chapter includes primers and design templates so mixed skill
+                teams can move quickly together.
+              </p>
+            </div>
+          </article>
+          <article class="faq-item">
+            <div class="faq-question">
+              <span>Does the book include runnable examples?</span>
+              <span>＋</span>
+            </div>
+            <div class="faq-answer">
+              <p>
+                Yes—every major pattern ships with repositories, notebooks, and CI-ready evaluation
+                suites. QR codes and short URLs make it easy to jump straight into code.
+              </p>
+            </div>
+          </article>
+          <article class="faq-item">
+            <div class="faq-question">
+              <span>How do updates and errata work?</span>
+              <span>＋</span>
+            </div>
+            <div class="faq-answer">
+              <p>
+                Purchase of the playbook includes lifetime digital updates. Major revisions trigger a
+                changelog email, and readers can submit errata through the feedback portal.
+              </p>
+            </div>
+          </article>
+          <article class="faq-item">
+            <div class="faq-question">
+              <span>Can I use the frameworks with my existing stack?</span>
+              <span>＋</span>
+            </div>
+            <div class="faq-answer">
+              <p>
+                The guidance is stack-agnostic. You'll find migration notes for common vector stores,
+                data orchestration tools, and observability platforms to accelerate integration.
+              </p>
+            </div>
+          </article>
+          <article class="faq-item">
+            <div class="faq-question">
+              <span>Is there content for leadership stakeholders?</span>
+              <span>＋</span>
+            </div>
+            <div class="faq-answer">
+              <p>
+                Absolutely. Executive briefings, ROI frameworks, and risk heatmaps help you articulate
+                the business case and governance plan alongside technical milestones.
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      © <span id="year"></span> RAG Systems Playbook — Crafted for builders of the next wave of intelligent products.
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/faq.js"></script>
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>
