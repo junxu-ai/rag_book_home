@@ -41,23 +41,14 @@ def _chapter_pages(files: List[str]) -> List[int]:
     Each file is temporarily converted to PDF so ``PyPDF2`` can determine the
     page count.  Temporary files are removed automatically.
     """
-    counts = []
-    temp_paths = []
-    try:
+    counts: List[int] = []
+    with tempfile.TemporaryDirectory() as tmpdir:
         for path in files:
-            fd, tmp_pdf = tempfile.mkstemp(suffix=".pdf")
-            os.close(fd)
-            convert(path, tmp_pdf)
-            temp_paths.append(tmp_pdf)
-            with open(tmp_pdf, "rb") as fh:
+            pdf_path = os.path.join(tmpdir, os.path.basename(path) + ".pdf")
+            convert(path, pdf_path)
+            with open(pdf_path, "rb") as fh:
                 reader = PdfReader(fh)
                 counts.append(len(reader.pages))
-    finally:
-        for tmp in temp_paths:
-            try:
-                os.remove(tmp)
-            except OSError:
-                pass
     return counts
 
 
