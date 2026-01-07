@@ -1,9 +1,72 @@
 {
+  "level_alignment": {
+    "0": "center",
+    "1": "center",
+    "2": "left"
+  },
   "nodes": [
-    { "id": "ceo", "name": "Alex Tan", "title": "CEO", "reports_to": null },
-    { "id": "cto", "name": "Mei Chen", "title": "CTO", "reports_to": "ceo" },
-    { "id": "cfo", "name": "Ravi Kumar", "title": "CFO", "reports_to": "ceo" },
-    { "id": "eng1", "name": "Iris Lim", "title": "Engineering Manager", "reports_to": "cto" },
-    { "id": "eng2", "name": "Ken Wong", "title": "Engineering Manager", "reports_to": "cto" }
+    {
+      "id": "ceo",
+      "name": "Alex Tan",
+      "department": "Executive",
+      "title": "Chief Executive Officer",
+      "reports_to": null
+    },
+    {
+      "id": "cto",
+      "name": "Mei Chen",
+      "department": "Technology",
+      "title": "Chief Technology Officer",
+      "reports_to": "ceo"
+    },
+    {
+      "id": "cfo",
+      "name": "Ravi Kumar",
+      "department": "Finance",
+      "title": "Chief Financial Officer",
+      "reports_to": "ceo"
+    },
+    {
+      "id": "eng1",
+      "name": "Iris Lim",
+      "department": "Platform Engineering",
+      "title": "Engineering Manager",
+      "reports_to": "cto"
+    },
+    {
+      "id": "eng2",
+      "name": "Ken Wong",
+      "department": "Data Engineering",
+      "title": "Engineering Manager",
+      "reports_to": "cto"
+    },
+    {
+      "id": "eng3",
+      "name": "Iris Lee",
+      "department": "Platform Engineering",
+      "title": "Engineering Manager",
+      "reports_to": "cto"
+    },
+    {
+      "id": "eng4",
+      "name": "Kenny Kong",
+      "department": "Data Engineering",
+      "title": "Engineering Manager",
+      "reports_to": "cto"
+    },   
+    {
+      "id": "eng5",
+      "name": "Iris Lee",
+      "department": "Platform Engineering",
+      "title": "Engineering Manager",
+      "reports_to": "cto"
+    },
+    {
+      "id": "eng6",
+      "name": "Kenny Kong",
+      "department": "Data Engineering",
+      "title": "Engineering Manager",
+      "reports_to": "cto"
+    }       
   ]
 }

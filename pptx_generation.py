@@ -1,13 +1,15 @@
 import json
-import math
-import argparse
+from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Tuple
+from typing import List, Dict, Optional
 
 from pptx import Presentation
 from pptx.util import Inches, Pt
 from pptx.enum.shapes import MSO_SHAPE, MSO_CONNECTOR
 from pptx.dml.color import RGBColor
+
+
+EMU_PER_INCH = 914400
 
 
 # -----------------------------
@@ -17,346 +19,180 @@ from pptx.dml.color import RGBColor
 class Node:
     id: str
     name: str
-    title: str = ""
-    reports_to: Optional[str] = None
+    department: str
+    title: str
+    reports_to: Optional[str]
     children: List["Node"] = field(default_factory=list)
-
-    # layout fields
     depth: int = 0
-    leaf_span: int = 1          # number of leaf nodes in subtree
-    x_center: float = 0.0       # in EMU (we'll compute in inches then convert)
+    x_center: float = 0.0
     y_top: float = 0.0
 
 
 # -----------------------------
-# Parsing: supports 2 JSON styles
+# Build hierarchy
 # -----------------------------
-def parse_json_to_tree(data: dict) -> Node:
-    """
-    Supports:
-      A) Flat format:
-         {"nodes":[{"id":"ceo","name":"A","title":"CEO","reports_to":null}, ...]}
-      B) Nested format:
-         {"id":"ceo","name":"A","title":"CEO","children":[{...}, {...}]}
-         or {"root": {...}}
-    Returns a single root Node.
-    """
-    if "root" in data and isinstance(data["root"], dict):
-        return parse_nested_node(data["root"])
-
-    if "nodes" in data and isinstance(data["nodes"], list):
-        return parse_flat_nodes(data["nodes"])
-
-    # If the entire JSON itself is a node dict (nested)
-    if isinstance(data, dict) and "name" in data and ("children" in data or "id" in data):
-        return parse_nested_node(data)
-
-    raise ValueError(
-        "Unsupported JSON format. Provide either {'nodes':[...]} flat format or a nested node with 'children'."
-    )
-
-
-def parse_nested_node(d: dict) -> Node:
-    node_id = str(d.get("id") or d.get("name"))
-    n = Node(
-        id=node_id,
-        name=str(d.get("name", "")),
-        title=str(d.get("title", "")),
-        reports_to=str(d.get("reports_to")) if d.get("reports_to") is not None else None,
-    )
-    for c in d.get("children", []) or []:
-        child = parse_nested_node(c)
-        child.reports_to = n.id
-        n.children.append(child)
-    return n
-
-
-def parse_flat_nodes(nodes: list) -> Node:
-    by_id: Dict[str, Node] = {}
-    for p in nodes:
-        pid = str(p["id"])
-        by_id[pid] = Node(
-            id=pid,
-            name=str(p.get("name", "")),
-            title=str(p.get("title", "")),
-            reports_to=str(p["reports_to"]) if p.get("reports_to") is not None else None,
+def build_tree(nodes_json: List[dict]) -> Node:
+    nodes = {}
+    for n in nodes_json:
+        nodes[n["id"]] = Node(
+            id=n["id"],
+            name=n["name"],
+            department=n["department"],
+            title=n["title"],
+            reports_to=n["reports_to"]
         )
 
-    # build parent-child relationships
-    roots: List[Node] = []
-    for n in by_id.values():
-        if n.reports_to and n.reports_to in by_id:
-            by_id[n.reports_to].children.append(n)
+    root = None
+    for n in nodes.values():
+        if n.reports_to and n.reports_to in nodes:
+            nodes[n.reports_to].children.append(n)
         else:
-            roots.append(n)
+            root = n
 
-    if not roots:
-        raise ValueError("No root found. Ensure at least one node has reports_to = null / missing.")
-    if len(roots) > 1:
-        # Create a synthetic root if multiple roots exist
-        synthetic = Node(id="__root__", name="(Org Chart)", title="")
-        for r in roots:
-            r.reports_to = synthetic.id
-            synthetic.children.append(r)
-        return synthetic
+    if not root:
+        raise ValueError("No root node found.")
 
-    return roots[0]
+    return root
 
 
-# -----------------------------
-# Layout algorithm (tree-based)
-# -----------------------------
-def assign_depths(root: Node, depth: int = 0) -> None:
-    root.depth = depth
-    for c in root.children:
+def assign_depths(node: Node, depth: int = 0):
+    node.depth = depth
+    for c in node.children:
         assign_depths(c, depth + 1)
 
 
-def compute_leaf_spans(root: Node) -> int:
-    """
-    Leaf span = number of leaves in subtree.
-    Used to allocate horizontal space proportionally and reduce overlap.
-    """
-    if not root.children:
-        root.leaf_span = 1
-        return 1
-    s = 0
-    for c in root.children:
-        s += compute_leaf_spans(c)
-    root.leaf_span = max(1, s)
-    return root.leaf_span
-
-
-def assign_positions(
-    root: Node,
-    x_left_in: float,
-    x_right_in: float,
-    y_top_in: float,
-    level_gap_in: float,
-) -> None:
-    """
-    Assign x_center (in inches) by distributing subtree spans across [x_left, x_right].
-    """
-    # y position determined purely by depth
-    root.y_top = y_top_in + root.depth * level_gap_in
-
-    # x center is midpoint of allocated band
-    root.x_center = (x_left_in + x_right_in) / 2.0
-
-    if not root.children:
-        return
-
-    total = sum(c.leaf_span for c in root.children)
-    band_width = x_right_in - x_left_in
-    cursor = x_left_in
-
-    for c in root.children:
-        w = band_width * (c.leaf_span / total if total else 1.0 / len(root.children))
-        assign_positions(c, cursor, cursor + w, y_top_in, level_gap_in)
-        cursor += w
-
-
-def collect_nodes_edges(root: Node) -> Tuple[List[Node], List[Tuple[Node, Node]]]:
-    nodes: List[Node] = []
-    edges: List[Tuple[Node, Node]] = []
+def collect_by_level(root: Node) -> Dict[int, List[Node]]:
+    levels = defaultdict(list)
 
     def dfs(n: Node):
-        nodes.append(n)
+        levels[n.depth].append(n)
         for c in n.children:
-            edges.append((n, c))
             dfs(c)
 
     dfs(root)
-    return nodes, edges
+    return levels
 
 
 # -----------------------------
-# PPT rendering
+# Rendering helpers
 # -----------------------------
-def inches_to_emu(x_in: float) -> int:
-    return int(Inches(x_in))
-
-
-def add_person_box(
-    slide,
-    x_in: float,
-    y_in: float,
-    w_in: float,
-    h_in: float,
-    name: str,
-    title: str,
-    style: dict,
-):
+def add_row_box(slide, x, y, w, h, text, bg_color, font_size, bold):
     shape = slide.shapes.add_shape(
-        MSO_SHAPE.ROUNDED_RECTANGLE,
-        Inches(x_in),
-        Inches(y_in),
-        Inches(w_in),
-        Inches(h_in),
+        MSO_SHAPE.RECTANGLE,
+        Inches(x),
+        Inches(y),
+        Inches(w),
+        Inches(h),
     )
+    shape.fill.solid()
+    shape.fill.fore_color.rgb = bg_color
+    shape.line.fill.background()
 
-    # fill & line
-    fill = shape.fill
-    fill.solid()
-    fill.fore_color.rgb = style["fill_rgb"]
-
-    line = shape.line
-    line.color.rgb = style["line_rgb"]
-    line.width = Pt(style["line_width_pt"])
-
-    # text
     tf = shape.text_frame
     tf.clear()
-    tf.word_wrap = True
-    tf.margin_left = Inches(0.08)
-    tf.margin_right = Inches(0.08)
-    tf.margin_top = Inches(0.05)
-    tf.margin_bottom = Inches(0.05)
-
-    # Name
     p = tf.paragraphs[0]
     run = p.add_run()
-    run.text = name
-    run.font.size = Pt(style["name_font_pt"])
-    run.font.bold = True
-    run.font.color.rgb = style["text_rgb"]
-
-    # Title (optional)
-    if title:
-        p2 = tf.add_paragraph()
-        run2 = p2.add_run()
-        run2.text = title
-        run2.font.size = Pt(style["title_font_pt"])
-        run2.font.bold = False
-        run2.font.color.rgb = style["text_rgb"]
+    run.text = text
+    run.font.size = Pt(font_size)
+    run.font.bold = bold
+    run.font.color.rgb = RGBColor(0, 0, 0)
+    p.alignment = 1  # center
 
     return shape
 
 
-def add_report_line(slide, x1_in: float, y1_in: float, x2_in: float, y2_in: float, style: dict):
-    conn = slide.shapes.add_connector(
-        MSO_CONNECTOR.STRAIGHT,
-        Inches(x1_in),
-        Inches(y1_in),
-        Inches(x2_in),
-        Inches(y2_in),
-    )
-    conn.line.color.rgb = style["connector_rgb"]
-    conn.line.width = Pt(style["connector_width_pt"])
-    return conn
+def draw_person(slide, node: Node, box_w, row_h):
+    x = node.x_center - box_w / 2
+    y = node.y_top
 
-
-def render_orgchart_to_pptx(
-    root: Node,
-    out_pptx: str,
-    slide_w_in: float = 13.33,   # default widescreen
-    slide_h_in: float = 7.5,
-    margin_in: float = 0.5,
-    box_w_in: float = 2.2,
-    box_h_in: float = 0.85,
-    level_gap_in: float = 1.2,
-):
-    prs = Presentation()
-    prs.slide_width = Inches(slide_w_in)
-    prs.slide_height = Inches(slide_h_in)
-
-    slide = prs.slides.add_slide(prs.slide_layouts[6])  # blank slide
-
-    style = {
-        "fill_rgb": RGBColor(245, 247, 250),
-        "line_rgb": RGBColor(120, 130, 140),
-        "text_rgb": RGBColor(30, 35, 40),
-        "line_width_pt": 1.0,
-        "name_font_pt": 14,
-        "title_font_pt": 11,
-        "connector_rgb": RGBColor(120, 130, 140),
-        "connector_width_pt": 1.0,
+    colors = {
+        "name": RGBColor(220, 230, 241),
+        "dept": RGBColor(235, 241, 222),
+        "title": RGBColor(242, 242, 242),
     }
 
-    # layout
-    assign_depths(root, 0)
-    compute_leaf_spans(root)
+    add_row_box(slide, x, y, box_w, row_h, node.name, colors["name"], 14, True)
+    add_row_box(slide, x, y + row_h, box_w, row_h, node.department, colors["dept"], 12, False)
+    add_row_box(slide, x, y + row_h * 2, box_w, row_h, node.title, colors["title"], 11, False)
 
-    # starting y: reserve top margin
-    y_top_in = margin_in
-    x_left_in = margin_in
-    x_right_in = slide_w_in - margin_in
 
-    assign_positions(root, x_left_in, x_right_in, y_top_in, level_gap_in)
-    nodes, edges = collect_nodes_edges(root)
+def draw_connector(slide, parent: Node, child: Node, box_w, box_h):
+    x1 = parent.x_center
+    y1 = parent.y_top + box_h
+    x2 = child.x_center
+    y2 = child.y_top
 
-    # map node id -> ppt shape
-    shape_by_id: Dict[str, object] = {}
-
-    # place boxes: convert center to top-left and keep within slide bounds
-    for n in nodes:
-        # skip synthetic root label if desired (here: we render it)
-        x_in = n.x_center - box_w_in / 2.0
-        y_in = n.y_top
-
-        # clamp slightly to avoid falling off the slide
-        x_in = max(margin_in, min(x_in, slide_w_in - margin_in - box_w_in))
-        y_in = max(margin_in, min(y_in, slide_h_in - margin_in - box_h_in))
-
-        shape = add_person_box(
-            slide=slide,
-            x_in=x_in,
-            y_in=y_in,
-            w_in=box_w_in,
-            h_in=box_h_in,
-            name=n.name,
-            title=n.title,
-            style=style,
-        )
-        shape_by_id[n.id] = shape
-
-    # draw connectors
-    # connector from manager bottom-center to report top-center
-    for manager, report in edges:
-        s1 = shape_by_id.get(manager.id)
-        s2 = shape_by_id.get(report.id)
-        if not s1 or not s2:
-            continue
-
-        x1 = (s1.left + s1.width / 2) / 914400.0  # EMU per inch
-        y1 = (s1.top + s1.height) / 914400.0
-        x2 = (s2.left + s2.width / 2) / 914400.0
-        y2 = (s2.top) / 914400.0
-
-        add_report_line(slide, x1, y1, x2, y2, style)
-
-    prs.save(out_pptx)
+    conn = slide.shapes.add_connector(
+        MSO_CONNECTOR.STRAIGHT,
+        Inches(x1),
+        Inches(y1),
+        Inches(x2),
+        Inches(y2),
+    )
+    conn.line.color.rgb = RGBColor(120, 120, 120)
+    conn.line.width = Pt(1)
 
 
 # -----------------------------
-# CLI
+# Main rendering logic
 # -----------------------------
-def main():
-    ap = argparse.ArgumentParser(description="Generate a multi-level org chart PowerPoint from JSON.")
-    ap.add_argument("--input", "-i", required=True, help="Path to input JSON file.")
-    ap.add_argument("--output", "-o", required=True, help="Path to output PPTX file.")
-    ap.add_argument("--landscape", action="store_true", help="Use widescreen landscape (default).")
-    ap.add_argument("--portrait", action="store_true", help="Use portrait-like slide size.")
-    args = ap.parse_args()
+def render_org_chart(
+    root: Node,
+    level_alignment: Dict[str, str],
+    output_pptx: str
+):
+    prs = Presentation()
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
 
-    with open(args.input, "r", encoding="utf-8") as f:
+    slide_w = prs.slide_width / EMU_PER_INCH
+
+    box_w = 2.6
+    row_h = 0.4
+    box_h = row_h * 3
+    level_gap = 1.4
+    margin = 0.6
+
+    assign_depths(root)
+    levels = collect_by_level(root)
+
+    for depth, nodes in levels.items():
+        count = len(nodes)
+        total_width = count * box_w
+        align = level_alignment.get(str(depth), "center")
+
+        if align == "left":
+            start_x = margin + box_w / 2
+        elif align == "right":
+            start_x = slide_w - margin - total_width + box_w / 2
+        else:  # center
+            start_x = (slide_w - total_width) / 2 + box_w / 2
+
+        for i, n in enumerate(nodes):
+            n.x_center = start_x + i * box_w
+            n.y_top = margin + depth * level_gap
+
+    for n in levels.values():
+        for node in n:
+            draw_person(slide, node, box_w, row_h)
+
+    for depth_nodes in levels.values():
+        for node in depth_nodes:
+            for c in node.children:
+                draw_connector(slide, node, c, box_w, box_h)
+
+    prs.save(output_pptx)
+
+
+# -----------------------------
+# Entry point
+# -----------------------------
+if __name__ == "__main__":
+    with open("pptx_json_flat.json", "r", encoding="utf-8") as f:
         data = json.load(f)
 
-    root = parse_json_to_tree(data)
-
-    # slide sizing
-    if args.portrait:
-        slide_w_in, slide_h_in = 7.5, 13.33
-    else:
-        slide_w_in, slide_h_in = 13.33, 7.5
-
-    render_orgchart_to_pptx(
+    root = build_tree(data["nodes"])
+    render_org_chart(
         root=root,
-        out_pptx=args.output,
-        slide_w_in=slide_w_in,
-        slide_h_in=slide_h_in,
+        level_alignment=data.get("level_alignment", {}),
+        output_pptx="org_chart.pptx"
     )
-
-
-if __name__ == "__main__":
-    main()
